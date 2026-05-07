@@ -1,32 +1,54 @@
 package com.narxoz.rpg.guild;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Topic-based mediator for the Adventurers' Guild war council.
- */
 public class GuildHall implements GuildMediator {
 
-    private final Map<String, List<GuildMember>> membersByTopic = new HashMap<>();
+    private Quartermaster quartermaster;
+    private Scout scout;
+    private Healer healer;
+    private Captain captain;
 
-    @Override
-    public void register(GuildMember member) {
-        // TODO: add the member to the topic lists it should receive.
+    public void setQuartermaster(Quartermaster quartermaster) {
+        this.quartermaster = quartermaster;
+    }
+
+    public void setScout(Scout scout) {
+        this.scout = scout;
+    }
+
+    public void setHealer(Healer healer) {
+        this.healer = healer;
+    }
+
+    public void setCaptain(Captain captain) {
+        this.captain = captain;
     }
 
     @Override
-    public void dispatch(String topic, GuildMember from, String payload) {
-        // TODO: notify registered members for the topic without direct colleague calls.
-    }
+    public void send(String message, GuildMember sender) {
 
-    protected void addSubscriber(String topic, GuildMember member) {
-        membersByTopic.computeIfAbsent(topic, key -> new ArrayList<>()).add(member);
-    }
+        String msg = message.toLowerCase();
 
-    protected List<GuildMember> subscribersFor(String topic) {
-        return membersByTopic.getOrDefault(topic, List.of());
+        if (sender instanceof Scout) {
+            captain.receive("Scout report: " + message);
+            return;
+        }
+
+        if (msg.contains("heal")) {
+            healer.receive(message);
+            return;
+        }
+
+        if (msg.contains("supply")) {
+            quartermaster.receive(message);
+            return;
+        }
+
+        if (msg.contains("enemy")) {
+            captain.receive(message);
+            healer.receive("Prepare for battle!");
+            return;
+        }
+
+        captain.receive(message);
     }
 }
