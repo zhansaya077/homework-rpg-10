@@ -35,6 +35,17 @@ public class QuestLog {
     public QuestIterator priorityAtLeast(QuestPriority threshold) {
         return new PriorityQuestIterator(this, threshold);
     }
+    public QuestIterator iterator() {
+    return new OrderedQuestIterator(quests);
+}
+
+public QuestIterator reverseIterator() {
+    return new ReverseQuestIterator(quests);
+}
+
+public QuestIterator priorityIterator(QuestPriority priority) {
+    return new PriorityQuestIterator(quests, priority);
+}
 
     List<Quest> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(quests));
