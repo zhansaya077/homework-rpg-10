@@ -2,28 +2,22 @@ package com.narxoz.rpg.quest;
 
 import java.util.List;
 
-/**
- * Traverses quests in arrival order.
- */
 public class OrderedQuestIterator implements QuestIterator {
 
-    private final List<Quest> snapshot;
-    private int cursor;
+    private final List<Quest> quests;
+    private int index = 0;
 
-    public OrderedQuestIterator(QuestLog questLog) {
-        this.snapshot = questLog.snapshot();
-        this.cursor = 0;
+    public OrderedQuestIterator(List<Quest> quests) {
+        this.quests = quests;
     }
 
     @Override
     public boolean hasNext() {
-        // TODO: return true while the cursor still points at an unread quest.
-        return false;
+        return index < quests.size();
     }
 
     @Override
     public Quest next() {
-        // TODO: return the current quest and advance the cursor.
-        return null;
+        return quests.get(index++);
     }
 }
