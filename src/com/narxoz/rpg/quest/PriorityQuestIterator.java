@@ -3,34 +3,28 @@ package com.narxoz.rpg.quest;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Traverses only quests whose priority is at least the requested threshold.
- */
 public class PriorityQuestIterator implements QuestIterator {
 
-    private final List<Quest> snapshot;
-    private int cursor;
+    private final List<Quest> filtered;
+    private int index = 0;
 
-    public PriorityQuestIterator(QuestLog questLog, QuestPriority threshold) {
-        QuestPriority minimum = threshold == null ? QuestPriority.LOW : threshold;
-        this.snapshot = new ArrayList<>();
-        for (Quest quest : questLog.snapshot()) {
-            if (quest.getPriority().ordinal() >= minimum.ordinal()) {
-                snapshot.add(quest);
+    public PriorityQuestIterator(List<Quest> quests, QuestPriority priority) {
+        this.filtered = new ArrayList<>();
+
+        for (Quest q : quests) {
+            if (q.getPriority() == priority) {
+                filtered.add(q);
             }
         }
-        this.cursor = 0;
     }
 
     @Override
     public boolean hasNext() {
-        // TODO: return true while the cursor still points at a matching quest.
-        return false;
+        return index < filtered.size();
     }
 
     @Override
     public Quest next() {
-        // TODO: return the current matching quest and advance the cursor.
-        return null;
+        return filtered.get(index++);
     }
 }
